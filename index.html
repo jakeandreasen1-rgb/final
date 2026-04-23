@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jake Andreasen | Resume</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --ink: #1f2937;
+      --muted: #4b5563;
+      --line: #dbe2ee;
+      --accent: #0f4c81;
+      --accent-soft: #e4eef8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(160deg, #eef3fb, #f8fafc 40%, #eef4ff);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    .resume {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 16px 35px rgba(25, 45, 80, 0.12);
+    }
+
+    .top {
+      padding: 2.5rem 2.2rem 1.7rem;
+      background: linear-gradient(130deg, #0f4c81, #1e5f97 45%, #2e74a8);
+      color: #fff;
+    }
+
+    .top-layout {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .top-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .name {
+      margin: 0;
+      font-size: 2.1rem;
+      letter-spacing: 0.3px;
+    }
+
+    .role {
+      margin: 0.4rem 0 1rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.1rem;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    .contact span {
+      white-space: nowrap;
+    }
+
+    .profile-photo {
+      width: 148px;
+      height: 148px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 10px 24px rgba(10, 34, 56, 0.28);
+      flex-shrink: 0;
+    }
+
+    .content {
+      padding: 1.8rem 2.2rem 2.2rem;
+    }
+
+    section {
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 0.97rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--accent-soft);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .item {
+      margin-bottom: 1rem;
+    }
+
+    .item:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.2rem;
+    }
+
+    .item-head strong {
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    .meta {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 0.4rem 0 0;
+      padding-left: 1.2rem;
+      color: var(--muted);
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .chip {
+      background: #f1f5fb;
+      border: 1px solid #d8e2f2;
+      color: #244667;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+      .top-layout {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile-photo {
+        width: 120px;
+        height: 120px;
+      }
+
+      .top,
+      .content {
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+      }
+
+      .name {
+        font-size: 1.7rem;
+      }
+
+      .contact {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body class="with-sidebar">
+  <aside class="sidebar">
+    <p class="sidebar-title">Navigate</p>
+    <a class="active" href="index.html">Resume</a>
+    <a href="app.html">App</a>
+    <a href="scratch.html">Scratch</a>
+  </aside>
+
+  <main class="resume">
+    <header class="top">
+      <div class="top-layout">
+        <div class="top-info">
+          <h1 class="name">Jake Andreasen</h1>
+          <div class="contact">
+            <span>Gilbert, AZ</span>
+            <span>email@email.com</span>
+            <span>(480) 000-0000</span>
+            <span>linkedin.com/in/ilovelinkedin</span>
+          </div>
+        </div>
+        <img
+          class="profile-photo"
+          src="https://media.licdn.com/dms/image/v2/D4E03AQGAUe5j4BqRPw/profile-displayphoto-scale_400_400/B4EZqzsm8mIIAg-/0/1763951411252?e=1778112000&amp;v=beta&amp;t=FruTuDZljb1PwO4MeDKWvwVFBWx12a-3i20usdZANn4"
+          alt="Jake Andreasen profile photo"
+        />
+      </div>
+    </header>
+
+    <div class="content">
+      <section>
+        <h2>Professional Summary</h2>
+        <p>
+          Active sophmore student at BYU studying pre-business trying to get into the business management program.
+          Strong focus in pre-health trying to become a pre-dental student in the future. A very hard-worker.
+        </p>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+        <article class="item">
+          <div class="item-head">
+            <strong>Door-to-Door Surveyor · Susan B. Anthony</strong>
+            <span class="meta">2021 - 2022</span>
+          </div>
+          <ul>
+            <li>Went door to door to survey people about their stances on sensetive but important topics.</li>
+            <li>Learned how to communicate with others and connecte with them in that moment.</li>
+            <li>Allowed others to share their oppinions with me even if they don't agree with me.</li>
+          </ul>
+        </article>
+
+        <article class="item">
+          <div class="item-head">
+            <strong>Testing Center Employee · Brigham Young University</strong>
+            <span class="meta">2025 - present</span>
+          </div>
+          <ul>
+            <li>Work as a team to be able to manage busy and large situations.</li>
+            <li>Work on timing with schedules during a busy college lifestyle.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section>
+        <h2>Awards</h2>
+        <article class="item">
+          <div class="item-head">
+            <strong>Summa Cum Laude</strong>
+            <span class="meta">Academics</span>
+          </div>
+          <p>4.3 weighted GPA. 4.0 unweighted GPA.</p>
+        </article>
+        <article class="item">
+          <div class="item-head">
+            <strong>Eagle Scout</strong>
+            <span class="meta">Boy Scouts of America</span>
+          </div>
+          <p>A young man who learned usefull life skills and quality principles in life.</p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <article class="item">
+          <div class="item-head">
+            <strong>High School Degree · Perry High School</strong>
+            <span class="meta">2019 - 2023</span>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <h2>Skills</h2>
+        <div class="chips">
+          <span class="chip">Math</span>
+          <span class="chip">Athletic</span>
+          <span class="chip">Bilingual</span>
+          <span class="chip">Freindly</span>
+          <span class="chip">Hard-working</span>
+          <span class="chip">VBL</span>
+          <span class="chip">Tableau</span>
+          <span class="chip">Code</span>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

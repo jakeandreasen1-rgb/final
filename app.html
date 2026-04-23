@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Volleyball Game</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(160deg, #f6f9ff, #eef4ff 45%, #f9fbff);
+  padding: 2rem 1rem 2rem 17.5rem;
+}
+
+.sidebar {
+  position: fixed;
+  top: 1.2rem;
+  left: 1rem;
+  width: 15.2rem;
+  background: #0e3556;
+  color: white;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.sidebar a {
+  display: block;
+  color: #e6f1fb;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.panel {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 16px 35px rgba(0,0,0,0.12);
+}
+
+h1 { margin-top: 0; color: #0f4c81; }
+
+#score {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+/* 3D COURT */
+.court-wrapper { perspective: 900px; }
+
+canvas {
+  width: 100%;
+  max-width: 900px;
+  height: 500px;
+
+  border-radius: 14px;
+  border: 3px solid #333;
+
+  transform: rotateX(18deg);
+  transform-origin: center bottom;
+
+  box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+  touch-action: none;
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+  <a href="index.html">Resume</a>
+  <a class="active" href="app.html">App</a>
+  <a href="scratch.html">Scratch</a>
+</aside>
+
+<main class="panel">
+  <h1>Volleyball Game</h1>
+  <div id="score">Red 0 - 0 Blue</div>
+
+  <div class="court-wrapper">
+    <canvas id="game" width="900" height="500"></canvas>
+  </div>
+</main>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let scoreRed = 0;
+let scoreBlue = 0;
+let gameOver = false;
+
+const player = { x: 200, y: 420, w: 30, h: 50, vy: 0, jumping: false };
+const cpu = { x: 650, y: 420, w: 30, h: 50 };
+
+const ball = {
+  x: 450,
+  y: 200,
+  r: 11,
+  vx: 2.5,
+  vy: -7
+};
+
+const gravity = 0.14;
+let keys = {};
+
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+/* MOUSE + TOUCH */
+canvas.addEventListener("mousemove", e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+  player.x = x - player.w / 2;
+});
+
+canvas.addEventListener("touchmove", e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width);
+  player.x = x - player.w / 2;
+});
+
+/* LOCK SIDES */
+function clampSides() {
+  player.x = Math.max(0, Math.min(430, player.x));
+  cpu.x = Math.max(450, Math.min(870 - cpu.w, cpu.x));
+}
+
+/* RESET BALL */
+function resetBall(dir) {
+  ball.x = 450;
+  ball.y = 200;
+  ball.vx = dir * (2 + Math.random() * 2);
+  ball.vy = -7;
+}
+
+/* 🏐 HALF NET */
+const net = {
+  x: 450,
+  top: 360,
+  bottom: 450,
+  w: 6
+};
+
+/* COURT */
+function drawCourt() {
+  ctx.fillStyle = "#1b5e20";
+  ctx.fillRect(0, 450, 900, 50);
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+
+  ctx.strokeRect(0, 0, 900, 450);
+
+  ctx.beginPath();
+  ctx.moveTo(450, 0);
+  ctx.lineTo(450, 450);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(150, 0);
+  ctx.lineTo(150, 450);
+  ctx.moveTo(750, 0);
+  ctx.lineTo(750, 450);
+  ctx.stroke();
+
+  ctx.fillStyle = "black";
+  ctx.fillRect(net.x - net.w/2, net.top, net.w, net.bottom - net.top);
+}
+
+/* DRAW */
+function drawRect(obj, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+}
+
+function drawBall() {
+  ctx.fillStyle = "#1e88e5";
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/* COLLISION */
+function collision(a, b) {
+  return a.x < b.x + b.w &&
+         a.x + a.w > b.x &&
+         a.y < b.y + b.h &&
+         a.y + a.h > b.y;
+}
+
+/* PLAYER */
+function updatePlayer() {
+  if (keys["ArrowLeft"]) player.x -= 5;
+  if (keys["ArrowRight"]) player.x += 5;
+
+  if (keys["ArrowUp"] && !player.jumping) {
+    player.vy = -7;
+    player.jumping = true;
+  }
+
+  player.vy += gravity;
+  player.y += player.vy;
+
+  if (player.y >= 420) {
+    player.y = 420;
+    player.vy = 0;
+    player.jumping = false;
+  }
+
+  if (collision(player, {
+    x: ball.x - ball.r,
+    y: ball.y - ball.r,
+    w: ball.r * 2,
+    h: ball.r * 2
+  })) {
+    ball.vx = Math.abs(ball.vx) + 0.8;
+    ball.vy = -7;
+  }
+}
+
+/* CPU */
+function updateCPU() {
+  if (ball.x > cpu.x + 10) cpu.x += 2.6;
+  if (ball.x < cpu.x + 10) cpu.x -= 2.6;
+
+  if (collision(cpu, {
+    x: ball.x - ball.r,
+    y: ball.y - ball.r,
+    w: ball.r * 2,
+    h: ball.r * 2
+  })) {
+    ball.vx = -Math.abs(ball.vx) - 0.8;
+    ball.vy = -7;
+  }
+}
+
+/* 🏁 WIN CONDITION FIXED */
+function checkWin() {
+  if (scoreRed >= 7 || scoreBlue >= 7) {
+    gameOver = true;
+
+    setTimeout(() => {
+      alert((scoreRed >= 7 ? "RED" : "BLUE") + " WINS!");
+
+      scoreRed = 0;
+      scoreBlue = 0;
+      gameOver = false;
+
+      resetBall(Math.random() > 0.5 ? 1 : -1);
+    }, 100);
+  }
+}
+
+/* RALLY SYSTEM */
+let hasBounced = false;
+
+function updateBall() {
+  if (gameOver) return;
+
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+  ball.vy += gravity;
+
+  // net collision
+  if (
+    ball.x > net.x - 5 &&
+    ball.x < net.x + 5 &&
+    ball.y > net.top &&
+    ball.y < net.bottom
+  ) {
+    ball.vx *= -1;
+  }
+
+  // ground hit = point + new rally
+  if (ball.y > 440) {
+    if (!hasBounced) {
+      hasBounced = true;
+
+      if (ball.x < 450) scoreBlue++;
+      else scoreRed++;
+
+      resetBall(Math.random() > 0.5 ? 1 : -1);
+      checkWin();
+    }
+
+    ball.vy *= -0.5;
+    ball.y = 440;
+  }
+
+  if (ball.y < 430) hasBounced = false;
+
+  if (ball.x < 0) { scoreBlue++; resetBall(1); checkWin(); }
+  if (ball.x > 900) { scoreRed++; resetBall(-1); checkWin(); }
+
+  document.getElementById("score").innerText =
+    `Red ${scoreRed} - ${scoreBlue} Blue`;
+}
+
+/* LOOP */
+function loop() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  drawCourt();
+
+  updatePlayer();
+  updateCPU();
+  updateBall();
+
+  clampSides();
+
+  drawRect(player, "red");
+  drawRect(cpu, "blue");
+  drawBall();
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>
